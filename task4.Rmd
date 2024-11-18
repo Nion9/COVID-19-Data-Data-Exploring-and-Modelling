@@ -1,0 +1,57 @@
+---
+title: "Final Assignment, Task 4"
+author: "Minhajul ISlam Nion"
+date: "30/10/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 4 - Insights 
+
+My dashboard picture is included in this zip folder.
+
+**Task 4 Report**:
+COVID-19 Dashboard Design Report
+
+1. Expanding the Data
+
+Since the current data only covers the first wave of COVID-19, I’d expand it to provide a more complete picture of the pandemic’s journey. Here’s how I’d go about it:
+
+Adding Data for Later Waves: I’d bring in information on subsequent waves (like Delta and Omicron) to show how cases, recoveries, and deaths changed over time.
+Including Vaccination and Variant Details: To better understand how vaccines and new variants influenced the spread, I’d add data on vaccination rates and track how each variant (like Alpha, Beta, etc.) affected each wave.
+Healthcare System Strain: Adding data on ICU usage and healthcare resources would help show when hospitals and medical resources were under the most stress.
+To build this out, I’d use data from reliable sources like the WHO, Johns Hopkins, and national health agencies to make sure the information is as complete and accurate as possible.
+
+2. Key Insights to Highlight
+
+I want this dashboard to really highlight the major stories of the pandemic in a clear and accessible way:
+
+Global Timeline: A line graph at the top would show how cases rose and fell over time, with markers for each wave’s peak. This helps people see when COVID-19 was at its worst.
+Regional Impact: A bar chart comparing death rates across major countries (like the US, India, and Brazil) would make it easy to see which areas were hardest hit.
+Vaccination and Variant Impact: Another chart would show vaccination progress alongside the spread of different variants. This helps viewers understand the impact of vaccines and the role variants played.
+Healthcare Strain: A bar chart for ICU occupancy by country would visualize when and where healthcare systems faced the most pressure.
+
+3. Design Choices for Clarity
+
+The design focuses on making the data easy to understand at a glance:
+
+Fonts and Labels: I’d use bold fonts for key numbers (like “5.2M Cases”) with smaller, supporting text underneath to help viewers focus on the main points.
+Color Scheme: I’d go for cool blues and grays to keep it calm and clean, with red and green accents to draw attention to critical points like spikes in cases or ICU usage.
+Interactive Options: Adding filters to focus on specific regions and tooltips for more details would make the dashboard more interactive and informative. Simple icons at the bottom could help viewers navigate through the different sections.
+
+4. Designed with the Public in Mind
+
+My goal is for this dashboard to be accessible and informative for a general audience:
+
+Simple Language: I’d keep titles and labels straightforward, avoiding technical terms so that anyone can understand each section at a glance.
+Easy-to-Spot Changes: Using color-coded trends (like +4% in green) helps viewers quickly see how metrics are changing.
+Natural Flow: The layout moves from global trends to more detailed insights, giving viewers an easy-to-follow story of how COVID-19 evolved and impacted different areas.
+
+
+
+----
+
+*** 

@@ -1,0 +1,199 @@
+---
+title: "Final Assignment, Task 3"
+author: "Minhajul ISlam Nion"
+date: "20/10/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 3: Data-Driven Modelling:
+
+1. Based on the covid19_data dataframe, that you have wrangled and used in the previous tasks, create a separate dataframe named "cor_data" with the data of these variables (CumCases, CumTests, Population, GDP, GDPCapita) variables.
+
+    
+```{r}
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(caret)
+library(glmnet)
+library(rpart)
+library(Metrics)
+# Ensure covid19_data is ungrouped before selecting columns
+cor_data <- covid19_data %>%
+  ungroup() %>%             # Remove any grouping from covid19_data
+  select(CumCases, CumTests, Population, GDP, GDPCapita)
+
+# Display the first few rows of cor_data to verify
+head(cor_data)
+
+
+```
+
+2. Compute the correlation matrix between the variables of the “cor_data” and visualise this correlation matrix.
+
+```{r}
+# Compute the correlation matrix for the selected variables in cor_data
+cor_matrix <- cor(cor_data, use = "complete.obs")
+
+# Visualize the correlation matrix
+library(corrplot)
+corrplot(cor_matrix, method = "color", type = "upper", 
+         tl.col = "black", tl.srt = 45,
+         title = "Correlation Matrix of Selected Variables in cor_data",
+         addCoef.col = "black", number.cex = 0.7)
+
+
+```
+
+3. visualize the distribution of the cumulative cases in the cor_data with and without changing the scale of the x axis to log transformation.
+
+```{r}
+# Distribution of Cumulative Cases without log transformation
+ggplot(cor_data, aes(x = CumCases)) +
+  geom_histogram(binwidth = 50000, fill = "blue", color = "black") +
+  labs(title = "Distribution of Cumulative Cases", x = "Cumulative Cases", y = "Frequency") +
+  theme_minimal()
+
+# Distribution of Cumulative Cases with log transformation on x-axis, excluding zero/negative values
+ggplot(cor_data %>% filter(CumCases > 0), aes(x = CumCases)) +
+  geom_histogram(binwidth = 0.1, fill = "blue", color = "black") +
+  scale_x_log10() +
+  labs(title = "Distribution of Cumulative Cases (Log Scale)", x = "Log of Cumulative Cases", y = "Frequency") +
+  theme_minimal()
+
+
+```
+
+4. Divide the cor_data into training and testing, where training data represent 65% of the number of rows.
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Split the data into 65% training and 35% testing
+trainIndex <- createDataPartition(cor_data$CumCases, p = 0.65, list = FALSE)
+train_data <- cor_data[trainIndex, ]
+test_data <- cor_data[-trainIndex, ]
+
+# Display the number of rows in each dataset
+cat("Number of rows in training data:", nrow(train_data), "\n")
+cat("Number of rows in testing data:", nrow(test_data), "\n")
+
+
+```
+
+5. Train a linear regression model to predict cumulative cases from the GDP of the countries. Then, evaluate this model on the test data and print the root mean square error value.
+
+```{r}
+# Train a linear regression model using GDP to predict CumCases
+model_gdp <- lm(CumCases ~ GDP, data = train_data)
+
+# Make predictions on the test data
+predictions_gdp <- predict(model_gdp, test_data)
+
+# Calculate and print the Root Mean Square Error (RMSE)
+rmse_gdp <- sqrt(mean((test_data$CumCases - predictions_gdp)^2))
+cat("RMSE for GDP-only model:", rmse_gdp, "\n")
+
+
+```
+
+6. Train another linear regression model to predict cumulative cases from all the other variables. Then, evaluate this model on the test data and print the root mean square error value.
+
+```{r}
+# Train a linear regression model using all other variables to predict CumCases
+model_all <- lm(CumCases ~ CumTests + Population + GDP + GDPCapita, data = train_data)
+
+# Make predictions on the test data
+predictions_all <- predict(model_all, test_data)
+
+# Calculate and print the Root Mean Square Error (RMSE)
+rmse_all <- sqrt(mean((test_data$CumCases - predictions_all)^2))
+cat("RMSE for model with all variables:", rmse_all, "\n")
+
+
+```
+
+7. Interpret the two models and write a small report of highlighting the differences between using the two models. For example, in which cases we should use the first model and in which cases the second one is better to use.
+
+**Interpretation goes below here**:
+#- GDP-Only Model
+#Uses GDP alone to predict cases, providing a quick, high-level estimate based on economic capacity.
+#Best Use: Suitable for broad predictions when only economic data is available, though it lacks accuracy without population or testing data.
+
+#- All Variables Model
+#Incorporates GDP, testing, population, and GDP per capita for a fuller picture.
+#Best Use: Preferred for detailed analyses, offering greater accuracy by capturing multiple factors influencing case counts.
+
+#- Conclusion: The GDP-only model is effective for quick, simple estimates, while the all-variables model provides more accurate, nuanced predictions when comprehensive data is available.
+
+
+
+8. Extend the analysis by training alternative regression models (e.g., Ridge Regression, Lasso Regression, or Decision Trees) to predict cumulative cases using all variables. Compare the performance (e.g., RMSE, R-squared) of these models with the linear regression models. Present the comparisons between these approaches and the linear regression models in a table.
+
+```{r}
+# Load required libraries
+library(glmnet)
+library(rpart)
+library(caret)
+library(Metrics)
+
+# Prepare data for alternative models
+x_train <- as.matrix(train_data %>% select(-CumCases))
+y_train <- train_data$CumCases
+x_test <- as.matrix(test_data %>% select(-CumCases))
+y_test <- test_data$CumCases
+
+# Train a Ridge Regression model
+ridge_model <- cv.glmnet(x_train, y_train, alpha = 0)
+ridge_predictions <- predict(ridge_model, x_test, s = "lambda.min")
+rmse_ridge <- rmse(y_test, ridge_predictions)
+r2_ridge <- cor(y_test, ridge_predictions)^2
+
+# Train a Lasso Regression model
+lasso_model <- cv.glmnet(x_train, y_train, alpha = 1)
+lasso_predictions <- predict(lasso_model, x_test, s = "lambda.min")
+rmse_lasso <- rmse(y_test, lasso_predictions)
+r2_lasso <- cor(y_test, lasso_predictions)^2
+
+# Train a Decision Tree model
+tree_model <- rpart(CumCases ~ ., data = train_data)
+tree_predictions <- predict(tree_model, test_data)
+rmse_tree <- rmse(y_test, tree_predictions)
+r2_tree <- cor(y_test, tree_predictions)^2
+
+# Linear Regression Model (GDP Only) for comparison
+rmse_gdp <- rmse(test_data$CumCases, predictions_gdp)
+r2_gdp <- cor(test_data$CumCases, predictions_gdp)^2
+
+# Linear Regression Model (All Variables) for comparison
+rmse_all <- rmse(test_data$CumCases, predictions_all)
+r2_all <- cor(test_data$CumCases, predictions_all)^2
+
+# Compile the results into a table
+results <- data.frame(
+  Model = c("Linear Regression (GDP Only)", "Linear Regression (All Variables)", "Ridge Regression", "Lasso Regression", "Decision Tree"),
+  RMSE = c(rmse_gdp, rmse_all, rmse_ridge, rmse_lasso, rmse_tree),
+  R_squared = c(r2_gdp, r2_all, r2_ridge, r2_lasso, r2_tree)
+)
+results
+
+
+```
+
+**Table of the results goes here**:
+| Model                            | RMSE         | R-squared  |
+|----------------------------------|--------------|------------|
+| Linear Regression (GDP Only)     | `rmse_gdp`   | `r2_gdp`   |
+| Linear Regression (All Variables)| `rmse_all`   | `r2_all`   |
+| Ridge Regression                 | `rmse_ridge` | `r2_ridge` |
+| Lasso Regression                 | `rmse_lasso` | `r2_lasso` |
+| Decision Tree                    | `rmse_tree`  | `r2_tree`  |
+
+----
+
+*** 
