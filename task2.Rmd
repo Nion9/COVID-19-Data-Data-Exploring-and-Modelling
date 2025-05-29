@@ -1,11 +1,4 @@
----
-title: "Final Assignment, Task 2"
-author: "Put your name"
-date: ''
-output:
-  html_document: default
-  pdf_document: default
----
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
