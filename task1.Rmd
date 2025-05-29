@@ -1,9 +1,3 @@
----
-title: "Final Assignment, Task 1"
-author: "Minhajul Islam Nion"
-date: "29/10/2024"
-output: html_document
----
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
