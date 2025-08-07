@@ -55,7 +55,7 @@ Tables: Model performance comparisons (e.g., RMSE, R-squared) printed in the con
 Dashboard: A conceptual design in dashboard.png, detailing global trends, regional impacts, and healthcare strain.
 
 Contributing
-Feel free to fork this repository, suggest improvements, or add datasets for further analysis. Contact Minhajul Islam Nion at minhajul.nion@example.com for collaboration.
+Feel free to fork this repository, suggest improvements, or add datasets for further analysis. Contact Minhajul Islam Nion at minhajulislamnion@gmail.com for collaboration.
 License
 This project is for educational purposes and can be used under the MIT License. See LICENSE file for details (to be added if desired).
 Acknowledgements
